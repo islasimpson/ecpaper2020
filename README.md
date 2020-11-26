@@ -1,8 +1,4 @@
-=================================================================================================
-=== Package to perform the analysis described in Simpson et al (2010) Emergent constraints on ===
-=== the large scale atmospheric circulation and regional hydroclimate: do they still work in  ===
-=== CMIP6 and how much can they actually constrain the future?, submitted to J. Clim          ===
-================================================================================================= 
+Package to perform the analysis described in Simpson et al (2010) Emergent constraints on the large scale atmospheric circulation and regional hydroclimate: do they still work in CMIP6 and how much can they actually constrain the future?, submitted to J. Clim 
 
 In the following, it is assumed that this package has been downloaded to $DIR.
 
