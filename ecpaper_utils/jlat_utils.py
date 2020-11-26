@@ -1,4 +1,4 @@
-import nump as np
+import numpy as np
 
 def calcjetlat( uzm, minlat, maxlat):
 # -----calculate the latitude of a maximum between latitude bounds 
