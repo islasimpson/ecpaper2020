@@ -18,8 +18,15 @@ def read_zonalmean_1lev(filepath, datestart, dateend, plev):
     try:
         dat=xr.open_mfdataset(filepath, coords="minimal", join="override",
                              decode_times=True, use_cftime=True).\
-                             sel(time=slice(datestart, dateend)).\
-                             sel(plev=plev, method="nearest")
+                             sel(time=slice(datestart, dateend))
+
+        try:
+            dat=dat.sel(plev=plev, method="nearest")
+        except:
+            # deal with different coordinate names
+            dat=dat.rename({"pre":"plev"})
+            dat=dat.sel(plev=plev, method="nearest")
+
         try:
             datzm=dat.mean(dim="lon")
         except:
@@ -29,7 +36,14 @@ def read_zonalmean_1lev(filepath, datestart, dateend, plev):
     except:
         print("Something's wierd about thte time axis, decoding manually")
         dat=xr.open_mfdataset(filepath, coords="minimal", join="override",
-                             decode_times=False).sel(plev=plev, method="nearest")
+                             decode_times=False)
+
+        try:
+            dat=dat.sel(plev=plev, method="nearest")
+        except:
+            dat=dat.rename({"pre":"plev"})
+            dat=dat.sel(plev=plev, method="nearest")
+
         try:
             datzm=dat.mean(dim="lon")
         except:
