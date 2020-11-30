@@ -10,6 +10,12 @@ def cosweightlonlat(darray,lon1,lon2,lat1,lat2):
         print("flipping latitudes")
         darray = darray.sortby('lat')
 
+    # flip longitudes if they start at -180
+    if (darray.lon[0] < 0):
+        print("flipping longitudes")
+        darray.coords['lon'] = (darray.coords['lon'] + 360) % 360
+        darray = darray.sortby(darray.lon)
+
 
     region=darray.sel(lon=slice(lon1,lon2),lat=slice(lat1,lat2))
     weights = np.cos(np.deg2rad(region.lat))
