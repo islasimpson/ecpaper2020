@@ -94,18 +94,19 @@ def season_ts(ds, var, season):
     ds_season = ds.where(ds['time.season'] == season)
 
     # calculate 3month rolling mean (only middle months of season will have non-nan values)
-    ds_season = ds_season[var].rolling(min_periods=3, center=True, time=3).mean()
+    ds_season = ds_season[var].rolling(min_periods=3, center=True, time=3).mean().dropna("time", how='all')
 
-    # reduce to one value per year
-    ds_season = ds_season.groupby('time.year').mean('time')
-
-    # remove years that are nan at all grid points
-    # to get rid of seasons that overlap with the start
-    # or end of the record
-
-    for iyear in ds_season['year'] :
-        if (np.isnan(ds_season.sel(year = iyear)).all().values) :
-             ds_season = ds_season.drop_sel( year = [iyear] )
-
+# IRS - this was the old way.  I think the above is more efficient (just using dropna)
+#    # reduce to one value per year
+#    ds_season = ds_season.groupby('time.year').mean('time')
+#
+#    # remove years that are nan at all grid points
+#    # to get rid of seasons that overlap with the start
+#    # or end of the record
+#
+#    for iyear in ds_season['year'] :
+#        if (np.isnan(ds_season.sel(year = iyear)).all().values) :
+#             ds_season = ds_season.drop_sel( year = [iyear] )
+#
     return ds_season
 
