@@ -27,7 +27,6 @@ def bootgen_multimem(darray, nboots, nmems, seed=None):
 
     # generate random numbers for bootstrapping
     if (seed):
-        print("using a seed")
         np.random.seed(seed)
 
     nmemin = darray[dims[0]].size
