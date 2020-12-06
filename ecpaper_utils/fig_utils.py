@@ -33,3 +33,16 @@ def combine_cmaps(n, white = 2, neg = "Blues", pos = "YlOrRd", start = 0.1):
     plt.cm.get_cmap(pos)(np.linspace(start = start, stop = 1, num = n))]))
     
     return new_col
+
+def jlatscattersetup(axs,titlestr):
+    """ Setting up axes for the jet latitude scatter plots """
+    axs.set_xlabel("Jet latitude, $\phi_{o}$ ($^{\circ}$N)", fontsize=14)
+    axs.set_ylabel("Jet shift, $\Delta \phi$, ($^{\circ}$N)", fontsize=14)
+    axs.set_title(titlestr, fontsize=16)
+    axs.set_xlim(-57,-33)
+    axs.set_ylim(-9,3)
+    axs.set_xticks([-55,-50,-45,-40,-35])
+    axs.set_xticklabels(['-55','-50','-45','-40','-35'], fontsize=14)
+    axs.set_yticks([-8,-6,-4,-2,0,2])
+    axs.set_yticklabels(['-8','-6','-4','-2','0','2'], fontsize=14)
+    return axs
