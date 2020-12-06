@@ -74,7 +74,7 @@ def tls(xin ,yin, sigmaxin, sigmayin):
     aout = ym + a*ysd - b*(ysd/xsd)*xm 
     return aout, bout
 
-def blr(xin, yin, sigxin, sigyin, rxyin, ntrue=1000, nburn = 30, nparams=30, iseed=None):
+def bhm(xin, yin, sigxin, sigyin, rxyin, ntrue=1000, nburn = 30, nparams=30, iseed=None):
     """
     Bayesian linear regression using Gibbs sampling.
     Assumes correlated errors in x and y
