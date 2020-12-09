@@ -234,6 +234,16 @@ def bhm(xin, yin, sigxin, sigyin, rxyin, ntrue=1000, nburn = 30, nparams=30, ise
 
 
 
+def compute_slope(y):
+    """
+    function to compute slopes along a dimension of an xarray DataArray
+    combine to apply_ufunc to implement
+    
+    Example usage: 
+    xr.apply_ufunc(linfit.compute_slope, da, vectorize=True, input_core_dims=[['time']])
+    """
+    x = np.arange(len(y))
+    return np.polyfit(x, y, 1)[0]
 
 
 
