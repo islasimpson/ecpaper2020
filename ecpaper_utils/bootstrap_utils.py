@@ -1,5 +1,6 @@
 import xarray as xr
 import numpy as np
+import sys
 
 def bootgen_multimem(darray, nboots, nmems, seed=None):
     """ Generate nboots bootstrap samples from darray with nmems members for each sample
@@ -78,3 +79,46 @@ def boot_corr_multimem(darrays, nboots, nmems, seed=None):
     bootdat = xr.DataArray(bootdat_corr, coords=bootcoords)
 
     return bootdat
+
+def boot_corr_ci(a1,a2,conf, nboots=1000):
+    """ Output the conf% confidence interval on correlation between 
+    two 1 dimensional arrays by bootstrapping with replacement
+
+    Input:
+        a1 = first array
+        a2 = second array
+        nboots = the number of bootstrap samples used to generate the ci
+        conf = the confidence interval you want e.g., 95 for 95% ci
+
+    Output:
+        minci = the minimum range of the confidence interval
+        maxci = the maximum range of the confidence interval
+ 
+    This assumes a two sided test.
+    """
+
+    ptilemin = (100.-conf)/2.
+    ptilemax = conf + (100-conf)/2.
+
+    if (a1.size != a2.size):
+        print("The two arrays must have the same size")
+        sys.exit()
+
+    samplesize = a1.size
+    ranu = np.random.uniform(0,samplesize,nboots*samplesize)
+    ranu = np.floor(ranu).astype(int)
+
+    bootdat = np.zeros([samplesize,nboots])
+    bootdat1 = np.array(a1[ranu])
+    bootdat2 = np.array(a2[ranu])
+    bootdat1 = bootdat1.reshape([samplesize,nboots])
+    bootdat2 = bootdat2.reshape([samplesize,nboots])
+
+    bootcor = xr.corr(xr.DataArray(bootdat1),xr.DataArray(bootdat2), dim='dim_0')
+    minci = np.percentile(bootcor,ptilemin)
+    maxci = np.percentile(bootcor,ptilemax)
+
+    return minci, maxci
+
+
+
