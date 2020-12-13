@@ -23,7 +23,7 @@ def linfit_xy(x,y, sigma=None):
     Output: a and b and the residuals
     """
 
-    if (sigma.any() != None):
+    if sigma is not None:
         w = 1./(sigma)
         coefs = np.polyfit(x,y,1,w=w)
     else:
