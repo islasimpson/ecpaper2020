@@ -175,18 +175,14 @@ def boot_regcoef_ci(a1,a2,conf,sigx=None,sigy=None,nboots=1000):
     acoef = np.zeros(nboots) ; bcoef=np.zeros(nboots)
 
     if sigx is not None:
-        print("performing TLS")
         for iboot in range(0,nboots,1):
             acoef[iboot], bcoef[iboot] = linfit.tls(bootdat1[:,iboot],bootdat2[:,iboot],
                               bootdatsigx[:,iboot],bootdatsigy[:,iboot])
         
     else:
-        print("performing OLS")
         for iboot in range(0,nboots,1):
             acoef[iboot], bcoef[iboot] = linfit.linfit_xy(bootdat1[:,iboot],bootdat2[:,iboot],
-                                                         sigma=sigy)
-
-
+                                                         sigma=bootdatsigy[:,iboot])
     
     aminci = np.percentile(acoef,ptilemin)
     amaxci = np.percentile(acoef,ptilemax)
