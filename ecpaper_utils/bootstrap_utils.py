@@ -3,16 +3,13 @@ import numpy as np
 import sys
 from ecpaper_utils import linfit_utils as linfit
 
-<<<<<<< HEAD
 def bootgen_multimem(darray, nmems, seed=None, nboots=1000):
-=======
-def bootgen_multimem(darray, nmems, nboots=1000, seed=None):
->>>>>>> b5f1fd01d459bf440bcbe868565cc17327720a6e
     """ Generate nboots bootstrap samples from darray with nmems members for each sample
+        calculates the mean over members 
 
     Input: darray = an xarray data array with the sampling being performed on the first dimension
-           nboots = the number of bootstrap samples
            nmems = the number of members in each bootstrap sample
+           nboots = the number of bootstrap samples (optional)
 
     Output: bootdatxr = an xarray data array containing the bootstrap samples
             with dimensions (nboots, all the other coords of darray except the first)
@@ -27,6 +24,8 @@ def bootgen_multimem(darray, nmems, nboots=1000, seed=None):
     bootcoords = [("iboot", np.arange(0,nboots,1))]
    
     for icoord in range(1,len(dims)):
+        print(icoord)
+        print(darray.shape)
         dimboot.append(darray[dims[icoord]].size)
         dimboot2d.append(darray[dims[icoord]].size)
         bootcoords.append( (dims[icoord], darray[dims[icoord]] ))
