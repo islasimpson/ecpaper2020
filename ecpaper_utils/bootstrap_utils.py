@@ -3,12 +3,13 @@ import numpy as np
 import sys
 from ecpaper_utils import linfit_utils as linfit
 
-def bootgen_multimem(darray, nboots, nmems, seed=None):
+def bootgen_multimem(darray, nmems, seed=None, nboots=1000):
     """ Generate nboots bootstrap samples from darray with nmems members for each sample
+        calculates the mean over members 
 
     Input: darray = an xarray data array with the sampling being performed on the first dimension
-           nboots = the number of bootstrap samples
            nmems = the number of members in each bootstrap sample
+           nboots = the number of bootstrap samples (optional)
 
     Output: bootdatxr = an xarray data array containing the bootstrap samples
             with dimensions (nboots, all the other coords of darray except the first)
@@ -194,10 +195,35 @@ def boot_regcoef_ci(a1,a2,conf,sigx=None,sigy=None,nboots=1000):
 
     return arange, brange
 
+def boot_stdev_ci(data,conf,nboots=1000):
+    """ Output the conf% confidence interval on standard deviation estimated from 
+    sample data
 
+    Input:
+        data = data array from which standard deviation is calculated
+        conf = the confidence interval you want e.g., 95 for 95% ci (2-sided)
+    Optional input:
+        nboots = the number of bootstrap samples used to generate the ci
 
+    Output:
+        sigminci = the minimum range of the confidence interval on stdev(data)
+        sigmaxci = the maximum range of the confidence interval on stdev(data)
+    
+    This assumes a two sided test.  
+    """
 
+    ptilemin = (100.-conf)/2.
+    ptilemax = conf + (100-conf)/2.
 
+    samplesize = data.size
+    ranu = np.random.uniform(0,samplesize,nboots*samplesize)
+    ranu = np.floor(ranu).astype(int)
 
+    bootdat = np.array(data[ranu])
+    bootdat = bootdat.reshape([samplesize,nboots])
 
+    bootstdev = np.std(bootdat, axis=0)
+    minci = np.percentile(bootstdev, ptilemin)
+    maxci = np.percentile(bootstdev, ptilemax)
 
+    return minci, maxci
