@@ -24,8 +24,6 @@ def bootgen_multimem(darray, nmems, seed=None, nboots=1000):
     bootcoords = [("iboot", np.arange(0,nboots,1))]
    
     for icoord in range(1,len(dims)):
-        print(icoord)
-        print(darray.shape)
         dimboot.append(darray[dims[icoord]].size)
         dimboot2d.append(darray[dims[icoord]].size)
         bootcoords.append( (dims[icoord], darray[dims[icoord]] ))
