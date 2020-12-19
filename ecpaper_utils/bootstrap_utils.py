@@ -3,7 +3,11 @@ import numpy as np
 import sys
 from ecpaper_utils import linfit_utils as linfit
 
+<<<<<<< HEAD
 def bootgen_multimem(darray, nmems, seed=None, nboots=1000):
+=======
+def bootgen_multimem(darray, nmems, nboots=1000, seed=None):
+>>>>>>> b5f1fd01d459bf440bcbe868565cc17327720a6e
     """ Generate nboots bootstrap samples from darray with nmems members for each sample
 
     Input: darray = an xarray data array with the sampling being performed on the first dimension
