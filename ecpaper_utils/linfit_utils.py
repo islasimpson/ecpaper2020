@@ -230,7 +230,7 @@ def bhm(xin, yin, sigxin, sigyin, rxyin, ntrue=1000, nburn = 30, nparams=30, ise
     muxout = xsd*mux[:] + xm
     deldelout = (ysd**2.)*deldel[:]
 
-    return aout, bout, deldelout, muxout, delxdelxout
+    return aout, bout, deldelout, muxout, delxdelxout, xt, yt
 
 
 
