@@ -34,7 +34,7 @@ def cosweightlat(darray, lat1, lat2):
         print("flipping latitudes")
         darray = darray.sortby('lat')
 
-    region = darray.sel(lag=slice(lat1, lat2))
+    region = darray.sel(lat=slice(lat1, lat2))
     weights=np.cos(np.deg2rad(region.lat))
     regionw = region.weighted(weights)
     regionm = regionw.mean("lat")
