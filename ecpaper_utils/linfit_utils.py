@@ -65,6 +65,7 @@ def tls(xin ,yin, sigmaxin, sigmayin):
     coefs = np.array([a, b])
     coefsin=coefs
     result = opt.minimize(chisq_func, coefs)
+
     coefs=result.x
     a = coefs[0]
     b = coefs[1]
@@ -90,6 +91,12 @@ def bhm(xin, yin, sigxin, sigyin, rxyin, ntrue=1000, nburn = 30, nparams=30, ise
     nburn = the number of iterations to throw out at the beginning
     nparams = the number of iterations for sampling parameters
     iseed = a specified random number seed (for reproducibility)
+    Output:
+    aout = ntrue values of the a parameter of y_t=a+bx_t 
+    bout = ntrue values of the b parameter of y_t=a+bx_t
+    deldelout = ntrue values of sigma^2_delta 
+    muxout = the mean of the true x values
+    delxdelxout = the variance of the true x values
     """
 
     # make sure input's are numpy arrays
@@ -137,6 +144,7 @@ def bhm(xin, yin, sigxin, sigyin, rxyin, ntrue=1000, nburn = 30, nparams=30, ise
     deldel =np.zeros(ntrue)
     mux = np.zeros(ntrue)
     delxdelx = np.zeros(ntrue)
+   # varyt = np.zeros(ntrue) # variance of y_true
 
     # initialize unknown parameters with first guesses
     
@@ -215,13 +223,16 @@ def bhm(xin, yin, sigxin, sigyin, rxyin, ntrue=1000, nburn = 30, nparams=30, ise
                 idelxdelx = delxdelxceiling
 
 
+        #print(str(np.var(yt))+'='+str(idelxdelx*(ibv**2) + ideldel))
+
         if (i >= nburn):
             av[i-nburn] = iav
             bv[i-nburn] = ibv
             deldel[i-nburn] = ideldel
             mux[i-nburn] = imux
             delxdelx[i-nburn] = idelxdelx
-
+            ytrenorm = yt[:]*ysd
+           # varyt[i-nburn] = np.var(ytrenorm)
     
     #re-normalize
     aout = ym + av[:]*ysd - bv[:]*(ysd/xsd)*xm
@@ -230,7 +241,7 @@ def bhm(xin, yin, sigxin, sigyin, rxyin, ntrue=1000, nburn = 30, nparams=30, ise
     muxout = xsd*mux[:] + xm
     deldelout = (ysd**2.)*deldel[:]
 
-    return aout, bout, deldelout, muxout, delxdelxout, xt, yt
+    return aout, bout, deldelout, muxout, delxdelxout
 
 
 
