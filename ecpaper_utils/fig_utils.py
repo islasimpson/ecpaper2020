@@ -47,14 +47,29 @@ def jlatscattersetup(axs,titlestr):
     axs.set_yticklabels(['-8','-6','-4','-2','0','2'], fontsize=14)
     return axs
 
-def plotconstraintinfo(axs, olsdata, tlsdata, bhmdata):
+def vwindscattersetup(axs,titlestr):
+    """ Setting up axes for the delta v_sw vs psi scatter plots """
+    axs.set_xlabel("$|\psi|$ (ms$^{-1}$)", fontsize=14)
+    axs.set_ylabel("$\Delta V_{SW}$ (ms$^{-1}$)", fontsize=14)
+    axs.set_title(titlestr, fontsize=16)
+    axs.set_xlim(1,6)
+    axs.set_ylim(-10,2)
+    axs.set_xticks([1,2,3,4,5,6])
+    axs.set_xticklabels(['1','2','3','4','5','6'], fontsize=14)
+    axs.set_yticks([-10,-8,-6,-4,-2,0,2])
+    axs.set_yticklabels(['-10','-8','-6','-4','-2','0','2'], fontsize=14)
+    return axs
+
+
+
+
+def plotconstraintinfo(axs, olsdata, tlsdata, bhmdata, ylim):
     """Plot the constraint and associated text.  
-    !!! Note this will have to be modified to automate the positioning of the text for other constraints
     """
-    axs.text(6, -4.5 ,'Forced', horizontalalignment='center', verticalalignment='center', fontsize=14, color='black')
-    axs.text(13, -4.5 ,'Forced', horizontalalignment='center', verticalalignment='center', fontsize=14, color='black')
-    axs.text(13,-5,'+', horizontalalignment='center', verticalalignment='center', fontsize=14, color='black')
-    axs.text(13, -5.5,'Internal', horizontalalignment='center', verticalalignment='center', fontsize=14, color='black')
+    axs.text(6, ylim[0] + 0.4*(ylim[1]-ylim[0]) ,'Forced', horizontalalignment='center', verticalalignment='center', fontsize=14, color='black')
+    axs.text(13, ylim[0] + 0.4*(ylim[1]-ylim[0]) ,'Forced', horizontalalignment='center', verticalalignment='center', fontsize=14, color='black')
+    axs.text(13,ylim[0] + 0.35*(ylim[1]-ylim[0]),'+', horizontalalignment='center', verticalalignment='center', fontsize=14, color='black')
+    axs.text(13,ylim[0] + 0.3*(ylim[1]-ylim[0]),'Internal', horizontalalignment='center', verticalalignment='center', fontsize=14, color='black')
 
     meanforced = (olsdata['meanforced'] + tlsdata['meanforced'] + bhmdata['meanforced'])/3.
     meanwithiv = (olsdata['meanwithiv'] + tlsdata['meanwithiv'] + bhmdata['meanwithiv'])/3.
@@ -68,18 +83,18 @@ def plotconstraintinfo(axs, olsdata, tlsdata, bhmdata):
     meanforcedstr = '{0:6.2f}'.format(np.array(meanforced)).strip()
     meanwithivstr = '{0:6.2f}'.format(np.array(meanwithiv)).strip()
 
-    axs.text(6,-6.5,'$\Delta \phi$='+meanforcedstr, horizontalalignment='center', verticalalignment='center', fontsize=10, color='black')
-    axs.text(13,-6.5,'$\Delta \phi$='+meanwithivstr, horizontalalignment='center', verticalalignment='center', fontsize=10, color='black')
+    axs.text(6,ylim[0] + 0.16*(ylim[1]-ylim[0]),'$\Delta \phi$='+meanforcedstr, horizontalalignment='center', verticalalignment='center', fontsize=10, color='black')
+    axs.text(13,ylim[0] + 0.16*(ylim[1]-ylim[0]),'$\Delta \phi$='+meanwithivstr, horizontalalignment='center', verticalalignment='center', fontsize=10, color='black')
     min95forcedstr = '{0:6.2f}'.format(min95forced).strip()
     max95forcedstr = '{0:6.2f}'.format(max95forced).strip()
     min95withivstr = '{0:6.2f}'.format(min95withiv).strip()
     max95withivstr = '{0:6.2f}'.format(max95withiv).strip()
-    axs.text(6,-7.3,'ci=('+min95forcedstr+','+max95forcedstr+')', horizontalalignment='center', verticalalignment='center', fontsize=10, color='black')
-    axs.text(13,-7.3,'ci=('+min95withivstr+','+max95withivstr+')', horizontalalignment='center', verticalalignment='center', fontsize=10, color='black')
+    axs.text(6,ylim[0] + 0.1*(ylim[1]-ylim[0]),'ci=('+min95forcedstr+','+max95forcedstr+')', horizontalalignment='center', verticalalignment='center', fontsize=10, color='black')
+    axs.text(13,ylim[0] + 0.1*(ylim[1]-ylim[0]),'ci=('+min95withivstr+','+max95withivstr+')', horizontalalignment='center', verticalalignment='center', fontsize=10, color='black')
     gtforcedstr = '{0:6.2f}'.format(meangtforced).strip()
     gtwithivstr = '{0:6.2f}'.format(meangtwithiv).strip()
-    axs.text(6,-8.1,gtforcedstr+"%>CMIP5", horizontalalignment='center', verticalalignment='center', fontsize=10, color='black')
-    axs.text(13,-8.1,gtwithivstr+"%>CMIP5", horizontalalignment='center', verticalalignment='center', fontsize=10, color='black')
+    axs.text(6,ylim[0] + 0.04*(ylim[1]-ylim[0]),gtforcedstr+"%>CMIP5", horizontalalignment='center', verticalalignment='center', fontsize=10, color='black')
+    axs.text(13,ylim[0] + 0.04*(ylim[1]-ylim[0]),gtwithivstr+"%>CMIP5", horizontalalignment='center', verticalalignment='center', fontsize=10, color='black')
 
     axs.bar(4,olsdata['max95forced']-olsdata['min95forced'],bottom=olsdata['min95forced'], color='saddlebrown', width=1, zorder=2)
     axs.plot([4-0.5,4+0.5],[olsdata['min66forced'],olsdata['min66forced']], color='white')
@@ -96,7 +111,7 @@ def plotconstraintinfo(axs, olsdata, tlsdata, bhmdata):
     axs.plot([8-0.5,8+0.5],[bhmdata['max66forced'],bhmdata['max66forced']], color='white')
     axs.plot([8-0.5,8+0.5],[bhmdata['meanforced'],bhmdata['meanforced']], color='black')
     
-    axs.plot([9.5,9.5],[-9,3], color='black')
+    axs.plot([9.5,9.5],[ylim[0],ylim[1]], color='black')
     
     axs.bar(11,olsdata['max95withiv']-olsdata['min95withiv'],bottom=olsdata['min95withiv'], color='saddlebrown', width=1, zorder=2)
     axs.plot([11-0.5,11+0.5],[olsdata['min66withiv'],olsdata['min66withiv']], color='white')
