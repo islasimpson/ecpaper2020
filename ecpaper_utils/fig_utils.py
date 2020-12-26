@@ -62,15 +62,15 @@ def vwindscattersetup(axs,titlestr):
 
 def calpscattersetup(axs, titlestr):
     """ Setting up axes for the CALP statter plots """
-    axs.set_xlabel("r(Ni\~{n}o3.4, Cal pr)")
-    axs.set_ylabel("Cal pr trend (mm/day/100y)")
+    axs.set_xlabel("r(Ni$\~{n}$o3.4, Cal pr)", fontsize=14)
+    axs.set_ylabel("Cal pr trend (mm/day/100y)", fontsize=14)
     axs.set_title(titlestr, fontsize=16)
     axs.set_xlim(-0.5,1)
     axs.set_ylim(-1.5,3)
     axs.set_xticks([-0.4,-0.2,0,0.2,0.4,0.6,0.8,1])
-    axs.set_xticklabels(['-0.4','-0.2','0','0.2','0.4','0.6','0.8','1'])
+    axs.set_xticklabels(['-0.4','-0.2','0','0.2','0.4','0.6','0.8','1'], fontsize=14)
     axs.set_yticks([-1,0,1,2,3])
-    axs.set_yticklabels(['-1','0','1','2','3'])
+    axs.set_yticklabels(['-1','0','1','2','3'], fontsize=14)
     return axs
 
 
