@@ -8,7 +8,8 @@ ols_col = [124/255, 79/255, 9/255, 1]
 tls_col = [20/255, 120/255, 112/255, 1]
 bhm_col = [73/255, 18/255, 133/255, 1]
 
-cmip_col = [[254/255, 10/255, 2/255, 1], [0/255, 88/255, 153/255, 1]]
+#cmip_col = [[254/255, 10/255, 2/255, 1], [0/255, 88/255, 153/255, 1]]
+cmip_col = ["firebrick", "royalblue"]
 
 le_order = ["CanESM2", "CESM1-CAM5", "CSIRO-Mk3-6-0", "GFDL-CM3", "MPI-ESM"]
 le_col = [[80/255, 179/255, 101/255, 1], 
@@ -139,8 +140,107 @@ def plotconstraintinfo(axs, olsdata, tlsdata, bhmdata, ylim):
     axs.plot([15-0.5,15+0.5],[bhmdata['max66withiv'],bhmdata['max66withiv']], color='white')
     axs.plot([15-0.5,15+0.5],[bhmdata['meanwithiv'],bhmdata['meanwithiv']], color='black')
 
+    return axs
+
+def plotconstraint_sensitivity(axs, ols, ols_noxobsvar, ols_nocoefvar, ols_nodelta,
+                               tls, tls_noxobsvar, tls_nocoefvar, tls_nodelta, 
+                               bhm, bhm_noxobsvar, bhm_nocoefvar, bhm_nodelta):
+    """ Plotting the ranges that demonstrate the sensitivity of the constraint to the
+        ommition of each uncertainty.  Used in supplemental figure 5 """
+
+    axs.bar(2,ols['max95withiv']-ols['min95withiv'], bottom=ols['min95withiv'], color='saddlebrown', width=1)
+    axs.plot([1.5,2.5],[ols['min66withiv'],ols['min66withiv']], color='white', linewidth=2)
+    axs.plot([1.5,2.5],[ols['max66withiv'],ols['max66withiv']], color='white', linewidth=2)
+    axs.plot([1.5,2.5],[ols['meanwithiv'],ols['meanwithiv']], color='black', linewidth=3)
+
+    axs.bar(4,ols['max95forced']-ols['min95forced'], bottom=ols['min95forced'], color='saddlebrown', width=1)
+    axs.plot([3.5,4.5],[ols['min66forced'],ols['min66forced']], color='white', linewidth=2)
+    axs.plot([3.5,4.5],[ols['max66forced'],ols['max66forced']], color='white', linewidth=2)
+    axs.plot([3.5,4.5],[ols['meanforced'],ols['meanforced']], color='black', linewidth=3)
+
+    axs.bar(6,ols_noxobsvar['max95withiv']-ols_noxobsvar['min95withiv'], bottom=ols_noxobsvar['min95withiv'], color='saddlebrown', width=1)
+    axs.plot([5.5,6.5],[ols_noxobsvar['min66withiv'],ols_noxobsvar['min66withiv']], color='white', linewidth=2)
+    axs.plot([5.5,6.5],[ols_noxobsvar['max66withiv'],ols_noxobsvar['max66withiv']], color='white', linewidth=2)
+    axs.plot([5.5,6.5],[ols_noxobsvar['meanwithiv'],ols_noxobsvar['meanwithiv']], color='black', linewidth=3)
+
+    axs.bar(8,ols_nocoefvar['max95withiv']-ols_nocoefvar['min95withiv'], bottom=ols_nocoefvar['min95withiv'], color='saddlebrown', width=1)
+    axs.plot([7.5,8.5],[ols_nocoefvar['min66withiv'],ols_nocoefvar['min66withiv']], color='white', linewidth=2)
+    axs.plot([7.5,8.5],[ols_nocoefvar['max66withiv'],ols_nocoefvar['max66withiv']], color='white', linewidth=2)
+    axs.plot([7.5,8.5],[ols_nocoefvar['meanwithiv'],ols_nocoefvar['meanwithiv']], color='black', linewidth=3)
+
+    axs.bar(10,ols_nodelta['max95withiv']-ols_nodelta['min95withiv'], bottom=ols_nodelta['min95withiv'], color='saddlebrown', width=1)
+    axs.plot([9.5,10.5],[ols_nodelta['min66withiv'],ols_nodelta['min66withiv']], color='white', linewidth=2)
+    axs.plot([9.5,10.5],[ols_nodelta['max66withiv'],ols_nodelta['max66withiv']], color='white', linewidth=2)
+    axs.plot([9.5,10.5],[ols_nodelta['meanwithiv'],ols_nodelta['meanwithiv']], color='black', linewidth=3)
 
 
+    axs.bar(13,tls['max95withiv']-tls['min95withiv'], bottom=tls['min95withiv'], color='forestgreen', width=1)
+    axs.plot([12.5,13.5],[tls['min66withiv'],tls['min66withiv']], color='white', linewidth=2)
+    axs.plot([12.5,13.5],[tls['max66withiv'],tls['max66withiv']], color='white', linewidth=2)
+    axs.plot([12.5,13.5],[tls['meanwithiv'],tls['meanwithiv']], color='black', linewidth=3)
+
+    axs.bar(15,tls['max95forced']-tls['min95forced'], bottom=tls['min95forced'], color='forestgreen', width=1)
+    axs.plot([14.5,15.5],[tls['min66forced'],tls['min66forced']], color='white', linewidth=2)
+    axs.plot([14.5,15.5],[tls['max66forced'],tls['max66forced']], color='white', linewidth=2)
+    axs.plot([14.5,15.5],[tls['meanforced'],tls['meanforced']], color='black', linewidth=3)
+
+    axs.bar(17,tls_noxobsvar['max95withiv']-tls_noxobsvar['min95withiv'], bottom=tls_noxobsvar['min95withiv'], color='forestgreen', width=1)
+    axs.plot([16.5,17.5],[tls_noxobsvar['min66withiv'],tls_noxobsvar['min66withiv']], color='white', linewidth=2)
+    axs.plot([16.5,17.5],[tls_noxobsvar['max66withiv'],tls_noxobsvar['max66withiv']], color='white', linewidth=2)
+    axs.plot([16.5,17.5],[tls_noxobsvar['meanwithiv'],tls_noxobsvar['meanwithiv']], color='black', linewidth=3)
+
+    axs.bar(19,tls_nocoefvar['max95withiv']-tls_nocoefvar['min95withiv'], bottom=tls_nocoefvar['min95withiv'], color='forestgreen', width=1)
+    axs.plot([18.5,19.5],[tls_nocoefvar['min66withiv'],tls_nocoefvar['min66withiv']], color='white', linewidth=2)
+    axs.plot([18.5,19.5],[tls_nocoefvar['max66withiv'],tls_nocoefvar['max66withiv']], color='white', linewidth=2)
+    axs.plot([18.5,19.5],[tls_nocoefvar['meanwithiv'],tls_nocoefvar['meanwithiv']], color='black', linewidth=3)
+
+    axs.bar(21,tls_nodelta['max95withiv']-tls_nodelta['min95withiv'], bottom=tls_nodelta['min95withiv'], color='forestgreen', width=1)
+    axs.plot([20.5,21.5],[tls_nodelta['min66withiv'],tls_nodelta['min66withiv']], color='white', linewidth=2)
+    axs.plot([20.5,21.5],[tls_nodelta['max66withiv'],tls_nodelta['max66withiv']], color='white', linewidth=2)
+    axs.plot([20.5,21.5],[tls_nodelta['meanwithiv'],tls_nodelta['meanwithiv']], color='black', linewidth=3)
+
+    axs.bar(24,bhm['max95withiv']-bhm['min95withiv'], bottom=bhm['min95withiv'], color='blueviolet', width=1)
+    axs.plot([23.5,24.5],[bhm['min66withiv'],bhm['min66withiv']], color='white', linewidth=2)
+    axs.plot([23.5,24.5],[bhm['max66withiv'],bhm['max66withiv']], color='white', linewidth=2)
+    axs.plot([23.5,24.5],[bhm['meanwithiv'],bhm['meanwithiv']], color='black', linewidth=3)
+
+    axs.bar(26,bhm['max95forced']-bhm['min95forced'], bottom=bhm['min95forced'], color='blueviolet', width=1)
+    axs.plot([25.5,26.5],[bhm['min66forced'],bhm['min66forced']], color='white', linewidth=2)
+    axs.plot([25.5,26.5],[bhm['max66forced'],bhm['max66forced']], color='white', linewidth=2)
+    axs.plot([25.5,26.5],[bhm['meanforced'],bhm['meanforced']], color='black', linewidth=3)
+
+    axs.bar(28,bhm_noxobsvar['max95withiv']-bhm_noxobsvar['min95withiv'], bottom=bhm_noxobsvar['min95withiv'], color='blueviolet', width=1)
+    axs.plot([27.5,28.5],[bhm_noxobsvar['min66withiv'],bhm_noxobsvar['min66withiv']], color='white', linewidth=2)
+    axs.plot([27.5,28.5],[bhm_noxobsvar['max66withiv'],bhm_noxobsvar['max66withiv']], color='white', linewidth=2)
+    axs.plot([27.5,28.5],[bhm_noxobsvar['meanwithiv'],bhm_noxobsvar['meanwithiv']], color='black', linewidth=3)
+
+    axs.bar(30,bhm_nocoefvar['max95withiv']-bhm_nocoefvar['min95withiv'], bottom=bhm_nocoefvar['min95withiv'], color='blueviolet', width=1)
+    axs.plot([29.5,30.5],[bhm_nocoefvar['min66withiv'],bhm_nocoefvar['min66withiv']], color='white', linewidth=2)
+    axs.plot([29.5,30.5],[bhm_nocoefvar['max66withiv'],bhm_nocoefvar['max66withiv']], color='white', linewidth=2)
+    axs.plot([29.5,30.5],[bhm_nocoefvar['meanwithiv'],bhm_nocoefvar['meanwithiv']], color='black', linewidth=3)
+
+    axs.bar(32,bhm_nodelta['max95withiv']-bhm_nodelta['min95withiv'], bottom=bhm_nodelta['min95withiv'], color='blueviolet', width=1)
+    axs.plot([31.5,32.5],[bhm_nodelta['min66withiv'],bhm_nodelta['min66withiv']], color='white', linewidth=2)
+    axs.plot([31.5,32.5],[bhm_nodelta['max66withiv'],bhm_nodelta['max66withiv']], color='white', linewidth=2)
+    axs.plot([31.5,32.5],[bhm_nodelta['meanwithiv'],bhm_nodelta['meanwithiv']], color='black', linewidth=3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    return axs
 
 
 
