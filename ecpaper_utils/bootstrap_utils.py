@@ -2,6 +2,7 @@ import xarray as xr
 import numpy as np
 import sys
 from ecpaper_utils import linfit_utils as linfit
+from math import nan
 
 def bootgen_multimem(darray, nmems, seed=None, nboots=1000):
     """ Generate nboots bootstrap samples from darray with nmems members for each sample
@@ -82,6 +83,7 @@ def boot_corr_multimem(darrays, nboots, nmems, seed=None):
 
     return bootdat
 
+
 def boot_corr_ci(a1,a2,conf, nboots=1000):
     """ Output the conf% confidence interval on correlation between 
     two 1 dimensional arrays by bootstrapping with replacement
@@ -121,6 +123,71 @@ def boot_corr_ci(a1,a2,conf, nboots=1000):
     maxci = np.percentile(bootcor,ptilemax)
 
     return minci, maxci
+
+def boot_corr_signif(a1,a2,conf, dim="Model", nboots=1000, seed=None):
+    """ Output significance values for the correlation between a 1 dimensional array a1
+    and a multi-dimensional array a2
+
+    Input:
+        a1 = first array
+        a2 = second array
+        conf = the confidence interval you want e.g., 95 for 95% ci
+        dim = the dimension over which to perform eht correlation
+    
+
+    Output:
+        signifdat = an array of dimensions a2 minus dim that contains
+        1's for grid points where the correlation is significant and nan's otherwise 
+ 
+    This assumes a two sided test.
+    """
+
+    samplesize = a1[dim].size
+
+    ptilemin = (100.-conf)/2.
+    ptilemax = conf + (100-conf)/2.
+
+    # set up the dimensions and coordinates
+    dims = a2.dims
+    signifcoords = [ ]
+    dimboot = [samplesize*nboots]
+    dimboot2d = [samplesize, nboots]
+    dimout=[]
+    for icoord in range(1, len(dims)):
+        signifcoords.append( (dims[icoord], a2[dims[icoord]] ))
+        dimboot.append(a2[dims[icoord]].size)
+        dimboot2d.append(a2[dims[icoord]].size)
+        dimout.append(a2[dims[icoord]].size)
+
+    if (a1[dim].size != a2[dim].size):
+        print("The two arrays must have the same size")
+        sys.exit()
+
+    if (seed):
+        np.random.seed(seed)
+
+
+    ranu = np.random.uniform(0,samplesize,nboots*samplesize)
+    ranu = np.floor(ranu).astype(int)
+
+    bootdat1 = np.array(a1[ranu])
+    bootdat2 = np.array(a2[ranu])
+
+    bootdat1 = bootdat1.reshape([samplesize, nboots])
+    bootdat2 = bootdat2.reshape(dimboot2d)
+    bootcor = xr.corr(xr.DataArray(bootdat1), xr.DataArray(bootdat2), dim="dim_0")
+
+    min95 = np.percentile(bootcor, 2.5, axis=0)
+    max95 = np.percentile(bootcor, 97.5, axis=0)
+
+    signifdat = np.zeros(dimout)
+    signifdat = np.where( np.logical_or(min95 > 0, max95 < 0), 1, 0) 
+    signifdat = xr.DataArray(signifdat, coords=signifcoords)
+
+    return signifdat 
+
+
+
 
 def boot_regcoef_ci(a1,a2,conf,sigx=None,sigy=None,nboots=1000):
     """ Output the conf% confidence interval on regression coefficients between 
@@ -193,7 +260,69 @@ def boot_regcoef_ci(a1,a2,conf,sigx=None,sigy=None,nboots=1000):
     arange=[aminci, amaxci]
     brange=[bminci, bmaxci]
 
-    return arange, brange
+    return arange, brange, acoef, bcoef
+
+def boot_regcoefs(a1,a2,sigx=None,sigy=None,nboots=1000):
+    """ Output bootstrap samples of regression coefficients
+
+    Input:
+        a1 = first array
+        a2 = second array
+    Optional input:
+        nboots = the number of bootstrap samples used to generate the ci
+        sigx = the standard deviation on the predictor points
+        sigy = the standard deviation on the predictand points
+
+    Output:
+        acoefs = nboots samples of the coefficient a 
+        bcoefs = nboots samples of the coefficient b
+    
+    where y = a + bx
+ 
+    Different regression methods are used 
+    depending on the availability of sigx or sigy
+    if no sigx then ordinary least squares regression
+    if sigx and sigy then total least squares regression
+    """
+
+    if (a1.size != a2.size):
+        print("The two arrays must have the same size")
+        sys.exit()
+
+    samplesize = a1.size
+    ranu = np.random.uniform(0,samplesize,nboots*samplesize)
+    ranu = np.floor(ranu).astype(int)
+
+    bootdat = np.zeros([samplesize,nboots])
+    bootdat1 = np.array(a1[ranu])
+    bootdat2 = np.array(a2[ranu])
+    bootdat1 = bootdat1.reshape([samplesize,nboots])
+    bootdat2 = bootdat2.reshape([samplesize,nboots])
+
+    if sigx is not None:
+        bootdatsigx = np.array(sigx[ranu])
+        bootdatsigx = bootdatsigx.reshape([samplesize,nboots])
+    if sigy is not None:
+        bootdatsigy = np.array(sigy[ranu])
+        bootdatsigy = bootdatsigy.reshape([samplesize,nboots])
+
+    acoef = np.zeros(nboots) ; bcoef=np.zeros(nboots)
+
+    if sigx is not None:
+        for iboot in range(0,nboots,1):
+            acoef[iboot], bcoef[iboot] = linfit.tls(bootdat1[:,iboot],bootdat2[:,iboot],
+                              bootdatsigx[:,iboot],bootdatsigy[:,iboot])
+        
+    else:
+        for iboot in range(0,nboots,1):
+            acoef[iboot], bcoef[iboot] = linfit.linfit_xy(bootdat1[:,iboot],bootdat2[:,iboot],
+                                                         sigma=bootdatsigy[:,iboot])
+    
+    return acoef, bcoef
+
+
+
+
 
 def boot_stdev_ci(data,conf,nboots=1000):
     """ Output the conf% confidence interval on standard deviation estimated from 
