@@ -61,6 +61,20 @@ def vwindscattersetup(axs,titlestr):
     axs.set_yticklabels(['-10','-8','-6','-4','-2','0','2'], fontsize=14)
     return axs
 
+def vwindprscattersetup(axs, ylim, titlestr, obsdata):
+    xlim=(1,6)
+    axs.set_xlim(xlim)
+    axs.set_ylim(ylim)
+    axs.plot(xlim,[0,0], color='black')
+    axs.plot([obsdata["vamp_era5"], obsdata["vamp_era5"]],ylim, color="black", linewidth=2)
+    axs.plot([obsdata["vamp_erai"], obsdata["vamp_erai"]],ylim, color="black", linestyle='dotted', linewidth=2)
+    axs.plot([obsdata["vamp_jra"], obsdata["vamp_jra"]],ylim, color="black", linestyle='dashed', linewidth=2)
+    axs.plot([obsdata["vamp_merra"], obsdata["vamp_merra"]],ylim,color="black", linestyle='dashdot', linewidth=2)
+    axs.set_xticks([1,2,3,4,5,6])
+    axs.set_xticklabels(['1','2','3','4','5','6'], fontsize=14)
+    axs.set_title(titlestr, fontsize=16)
+    return axs
+
 def calpscattersetup(axs, titlestr):
     """ Setting up axes for the CALP statter plots """
     axs.set_xlabel("r(Ni$\~{n}$o3.4, Cal pr)", fontsize=14)
