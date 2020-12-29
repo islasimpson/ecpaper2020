@@ -177,14 +177,82 @@ def boot_corr_signif(a1,a2,conf, dim="Model", nboots=1000, seed=None):
     bootdat2 = bootdat2.reshape(dimboot2d)
     bootcor = xr.corr(xr.DataArray(bootdat1), xr.DataArray(bootdat2), dim="dim_0")
 
-    min95 = np.percentile(bootcor, 2.5, axis=0)
-    max95 = np.percentile(bootcor, 97.5, axis=0)
+    minci = np.percentile(bootcor, ptilemin, axis=0)
+    maxci = np.percentile(bootcor, ptilemax, axis=0)
 
     signifdat = np.zeros(dimout)
-    signifdat = np.where( np.logical_or(min95 > 0, max95 < 0), 1, 0) 
+    signifdat = np.where( np.logical_or(minci > 0, maxci < 0), 1, 0) 
     signifdat = xr.DataArray(signifdat, coords=signifcoords)
 
     return signifdat 
+
+def boot_2means_signif(a1,a2,conf, dim="Model", nboots=1000, seed=None):
+    """ Output significance values for the correlation between a 1 dimensional array a1
+    and a multi-dimensional array a2
+
+    Input:
+        a1 = first array
+        a2 = second array
+        conf = the confidence interval you want e.g., 95 for 95% ci
+        dim = the dimension over which to perform eht correlation
+    
+
+    Output:
+        signifdat = an array of dimensions a2 minus dim that contains
+        1's for grid points where the correlation is significant and nan's otherwise 
+ 
+    This assumes a two sided test.
+    """
+
+    samplesize1 = a1[dim].size
+    samplesize2 = a2[dim].size
+
+    ptilemin = (100.-conf)/2.
+    ptilemax = conf + (100-conf)/2.
+
+    # set up the dimensions and coordinates
+    dims = a2.dims
+    signifcoords = [ ]
+    dimboot1 = [samplesize1*nboots]
+    dimboot1_2d = [samplesize1, nboots]
+    dimboot2 = [samplesize2*nboots]
+    dimboot2_2d = [samplesize2, nboots]
+    dimout=[]
+    for icoord in range(1, len(dims)):
+        signifcoords.append( (dims[icoord], a2[dims[icoord]] ))
+        dimboot1.append(a1[dims[icoord]].size)
+        dimboot1_2d.append(a1[dims[icoord]].size)
+        dimboot2.append(a2[dims[icoord]].size)
+        dimboot2_2d.append(a2[dims[icoord]].size)
+        dimout.append(a2[dims[icoord]].size)
+
+    if (seed):
+        np.random.seed(seed)
+
+
+    ranu1 = np.random.uniform(0,samplesize1,nboots*samplesize1)
+    ranu1 = np.floor(ranu1).astype(int)
+    ranu2 = np.random.uniform(0,samplesize2,nboots*samplesize2)
+    ranu2 = np.floor(ranu2).astype(int)
+
+    bootdat1 = np.array(a1[ranu1])
+    bootdat2 = np.array(a2[ranu2])
+
+    bootdat1 = bootdat1.reshape(dimboot1_2d)
+    bootdat2 = bootdat2.reshape(dimboot2_2d)
+
+    bootdat1m = xr.DataArray(bootdat1).mean(dim="dim_0")
+    bootdat2m = xr.DataArray(bootdat2).mean(dim="dim_0")
+
+    bootdif = bootdat2m - bootdat1m
+    minci = np.percentile(bootdif, ptilemin, axis=0)
+    maxci = np.percentile(bootdif, ptilemax, axis=0)
+
+    signifdat = np.zeros(dimout)
+    signifdat = np.where( np.logical_or(minci > 0, maxci < 0), 1, 0) 
+    signifdat = xr.DataArray(signifdat, coords=signifcoords)
+
+    return signifdat
 
 
 
