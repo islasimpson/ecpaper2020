@@ -2,6 +2,7 @@ import xarray as xr
 import numpy as np
 import scipy.optimize as opt 
 import sys
+import statsmodels.api as sm
 
 def linfit_lonlat(darray,dimname):
     """Calculate the linear trend coefficients for an [:, lat, lon] array"""
@@ -32,6 +33,28 @@ def linfit_xy(x,y, sigma=None):
     a = coefs[1]
     b = coefs[0]
     return a, b
+
+def multi_ols(x, y, sigma=None):
+    """ Calculate a weighted least squares regression with multiple X variables
+    Input: x (numpy array of size nobs x npredictors)
+           y (the predictand)
+           sigma (optional) the standard deviation of the y values
+    Outbut: a and bs for each predictor
+    """
+    x = np.array(x)
+    x = sm.add_constant(x)
+    
+    y = np.array(y)
+    
+    if sigma is not None: 
+        sigma = np.array(sigma)
+        w = 1./(sigma**2)
+        model = sm.WLS(y, x, weights = w)
+    else:
+        model = sm.WLS(y, x)
+        
+    result = model.fit()
+    return result.params
 
 def tls(xin ,yin, sigmaxin, sigmayin):
     """Calculate the total least squares regression with errors in both x and y.
