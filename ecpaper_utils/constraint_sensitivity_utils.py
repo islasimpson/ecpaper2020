@@ -4,8 +4,12 @@ from ecpaper_utils import linfit_utils as linfit
 from ecpaper_utils import bootstrap_utils as boot
 import sys
 
+# contains the routines to perform the constraint and output the variance of the constraint
+# samples with only individual components of the uncertainty needed.  For Fig S5.
+
 def dotheconstraint_onlyxvar(xem, yem, x1mem, y1mem, obsx, sigxem=None, sigyem=None,sigx1mem=None,
                     sigy1mem=None, rxyem=None, rxy1mem=None, seed=None, nboots=1000, method='OLS'):
+    # performing the constraint while only considering the uncertainty in the observed predictor
 
     # check that all the needed things are there for the method
     if sigyem is None:
@@ -68,6 +72,8 @@ def dotheconstraint_onlyxvar(xem, yem, x1mem, y1mem, obsx, sigxem=None, sigyem=N
 
 def dotheconstraint_onlycoefs(xem, yem, x1mem, y1mem, obsx, sigxem=None, sigyem=None,sigx1mem=None,
                     sigy1mem=None, rxyem=None, rxy1mem=None, seed=None, nboots=1000, method='OLS'):
+
+    # performing the constraint while only considering the uncertainty in the regerssion coefficients
 
     # check that all the needed things are there for the method
     if sigyem is None:
@@ -136,6 +142,9 @@ def dotheconstraint_onlycoefs(xem, yem, x1mem, y1mem, obsx, sigxem=None, sigyem=
 
 def dotheconstraint_onlydelta(xem, yem, x1mem, y1mem, obsx, sigxem=None, sigyem=None,sigx1mem=None,
                     sigy1mem=None, rxyem=None, rxy1mem=None, seed=None, nboots=1000, method='OLS'):
+
+    # performing the constraint while only considering the uncertainty due to the uncertainty in the
+    # forced response not explained by the emergent constraint (i.e., the delta term).
 
     # check that all the needed things are there for the method
     if sigyem is None:
@@ -220,6 +229,9 @@ def dotheconstraint_onlydelta(xem, yem, x1mem, y1mem, obsx, sigxem=None, sigyem=
 def dotheconstraint_onlyiv(xem, yem, x1mem, y1mem, obsx, sigxem=None, sigyem=None,sigx1mem=None,
                     sigy1mem=None, rxyem=None, rxy1mem=None, seed=None, nboots=1000, method='OLS'):
 
+    # performing the constraint while only considering the internal variability on the future - past 
+    # difference.
+
     # check that all the needed things are there for the method
     if sigyem is None:
         print("You need to specify the sigma_y's for the ensemble mean for any constraint")
@@ -301,13 +313,10 @@ def dotheconstraint_onlyiv(xem, yem, x1mem, y1mem, obsx, sigxem=None, sigyem=Non
 
     return vary
 
-
-
-
-
-
 def dotheconstraint_all(xem, yem, x1mem, y1mem, obsx, sigxem=None, sigyem=None,sigx1mem=None,
                     sigy1mem=None, rxyem=None, rxy1mem=None, seed=None, nboots=1000, method='OLS'):
+
+    # do the constraint with everything included.
 
     # check that all the needed things are there for the method
     if sigyem is None:
@@ -436,9 +445,3 @@ def dotheconstraint_all(xem, yem, x1mem, y1mem, obsx, sigxem=None, sigyem=None,s
     varplusiv = np.var(yplusiv)
 
     return varforced,varplusiv
-
-
-
-
-
-

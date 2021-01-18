@@ -7,7 +7,28 @@ import sys
 def dotheconstraint(xem, yem, x1mem, y1mem, obsx, sigxem=None, sigyem=None,sigx1mem=None,
                     sigy1mem=None, rxyem=None, rxy1mem=None, seed=None, nboots=1000, method='OLS', 
                     outputsamples=False):
-    """ !!!! explain this !!!!"""
+    """ Performing the constraint 
+    Inputs:
+        xem = the ensemble mean predictor
+        yem = the ensemble mean predictand
+        x1mem = a single member predictor
+        y1mem = a single member predictand
+        obsx = the observed predictors
+        sigxem = the standard deviation on the ensemble mean predictor
+        sigyem = the standard deviation on the ensemble mean predictand
+        sigx1mem = the standard deviation on the single member predictor
+        sigy1mem = the standard deviation on the single member predictand
+        rxyem = the ensemble mean correlation between predictor and predictand
+        rxy1mem = the single member correlation between predictor and predictand
+        seed = a random number seed which may be specified for reproducibility
+        nboots = the number of bootstrap samples for each part. Default 1000.
+        method = 'OLS', 'TLS' or 'BHM'
+        outputsamples = if True, the samples used to build up the constrained distribution are output.
+    Outputs: 
+        datout = contains the mean, 95% and 66% confidence intervals and the fraction 
+         of samples greater than the ensemble mean predictand for both the forced response plus
+         internal variability and the forced response in isolation.
+    """
 
     # check that all the needed things are there for the method
     if sigyem is None:
