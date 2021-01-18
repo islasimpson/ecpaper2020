@@ -1,11 +1,17 @@
-Package to perform the analysis described in Simpson et al (2010) Emergent constraints on the large scale atmospheric circulation and regional hydroclimate: do they still work in CMIP6 and how much can they actually constrain the future?, submitted to J. Clim 
+# Emergent constraints package to reproduce figures in Simpson et al (2021)
+
+This package contains the scripts necessary to (a) pre-process data and (b) perform the analysis that is described in Simpson et al (2021) Emergent constraints on the large scale atmospheric circulation and regional hydroclimate: do they still work in CMIP6 and how much can they actually constrain the future *Submitted to J. Clim*
 
 In the following, it is assumed that this package has been downloaded to $DIR.
 
-To install the sub-routines (located in ecpaper_utils) required for running the following scripts, do
+##Installing utilities
 
+To install the utilities (located in ecpaper_utils) that are required for performing the analysis in the jupyter notebooks to process data and generate figures 
+
+```bash
 cd $DIR
 pip install -e . --user
+```
 
 ============= DATA pre-processing ================
 
