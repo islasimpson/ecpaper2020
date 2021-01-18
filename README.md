@@ -4,7 +4,7 @@ This package contains the scripts necessary to (a) pre-process data and (b) perf
 
 In the following, it is assumed that this package has been downloaded to $DIR.
 
-##Installing utilities
+## Installing utilities
 
 To install the utilities (located in ecpaper_utils) that are required for performing the analysis in the jupyter notebooks to process data and generate figures 
 
