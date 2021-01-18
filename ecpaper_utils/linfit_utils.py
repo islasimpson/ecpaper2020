@@ -4,6 +4,13 @@ import scipy.optimize as opt
 import sys
 import statsmodels.api as sm
 
+# various linear regression functions
+# linfit_lonlat = calculating the trend for a lat,lon array
+# linfit_xy = using ordinary least squares fit
+# multi_ols = multiple linear regression using OLS
+# tls = total least squares regresion
+# bhm = using a Bayesian Hierarchical Model.
+
 def linfit_lonlat(darray,dimname):
     """Calculate the linear trend coefficients for an [:, lat, lon] array"""
     darray_2d=darray.stack(allpoints=['lat','lon'])
