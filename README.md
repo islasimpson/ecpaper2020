@@ -37,12 +37,15 @@ Processed data are provided within sub-directories for each emergent constraint 
 
 The jupyter notebooks that were used to generate the figures in the main text are located in 
 
+```bash
 $DIR/FIGURE_SCRIPTS
+```
 
 and scripts to make the supplementary figures are located in 
 
+```bash
 $DIR/SUPP_FIGURE_SCIPTS
-
+```
 
 
 
